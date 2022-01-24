@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import random as r
 
-FILE_LOC = "G:/Storage/Files/Documents/CODE/dm1/lab1/data.csv"
+FILE_LOC = "./data.csv"
 
 df = pd.read_csv(FILE_LOC, encoding='unicode_escape')
 age_expec = df.iloc[0:, 70:72]
