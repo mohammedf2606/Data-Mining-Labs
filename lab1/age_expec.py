@@ -1,8 +1,6 @@
 import pandas as pd
 import matplotlib.pyplot as plt
-import numpy as np
 import random as r
-from sklearn import datasets
 
 FILE_LOC = "./data.csv"
 
@@ -44,4 +42,4 @@ axes.scatter(x_test, y_test, s=10, c='r', marker="o", label='second')
 plt.legend(loc='upper left')
 plt.show()
 
-x, y, p = datasets.make_regression(n_samples=100, n_features=1, n_informative=1, noise=10, coef=True)
+
