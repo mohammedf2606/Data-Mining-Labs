@@ -24,20 +24,17 @@ all_indices = list(range(len(x)))
 random_train_indices = r.sample(all_indices, train_size)
 random_test_indices = list(set(all_indices) - set(random_train_indices))
 
-index_values = list(enumerate(zip(x,y))) # Collection(index, (x,y))
-trainset = [index_values[i][1] for i in random_train_indices] #(x,y)
+index_values = list(enumerate(zip(x, y)))  # Collection(index, (x,y))
+trainset = [index_values[i][1] for i in random_train_indices]  # (x,y)
 testset = [index_values[i][1] for i in random_test_indices]
 
-##actual plot
+# actual plot
 
 x_train, y_train = zip(*trainset)
 x_test, y_test = zip(*testset)
 
-fig = plt.figure()
-axes = fig.add_subplot(111)
-
-axes.scatter(x_train, y_train, s=10, c='b', marker="s", label='first')
-axes.scatter(x_test, y_test, s=10, c='r', marker="o", label='second')
+plt.scatter(x_train, y_train, s=10, c='b', marker="s", label='first')
+plt.scatter(x_test, y_test, s=10, c='r', marker="o", label='second')
 
 plt.legend(loc='upper left')
 plt.show()
