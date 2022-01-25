@@ -46,7 +46,7 @@ LEARNING_RATE = 0.001
 
 for _ in range(10):
     print(weights)
-    weights = gd.stochastic_gradient_descent(len(x_input), x_input, weights, y_train, LEARNING_RATE)
+    weights = gd.batch_gradient_descent(len(x_input), x_input, weights, y_train, LEARNING_RATE)
     fig = plt.figure()
     ax = fig.add_subplot(111)
     ax.scatter(x_train, y_train, s=10, c='b', marker="s", label='first')
