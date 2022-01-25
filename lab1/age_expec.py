@@ -41,16 +41,19 @@ x_test, y_test = zip(*testset)
 # plt.legend(loc='upper left')
 # plt.show()
 x_input = [[float(1), float(x)] for x in x_train]
-weights = [1 for i in range(len(x_input[0]))]
-LEARNING_RATE = 0.001
+weights = [0 for i in range(len(x_input[0]))]
+LEARNING_RATE = 0.0001
 
-for _ in range(10):
+for _ in range(1000):
     print(weights)
     weights = gd.batch_gradient_descent(len(x_input), x_input, weights, y_train, LEARNING_RATE)
-    fig = plt.figure()
-    ax = fig.add_subplot(111)
-    ax.scatter(x_train, y_train, s=10, c='b', marker="s", label='first')
-    ax.axline((0, weights[0]), slope=weights[1], color='C0', label='by slope')
-    plt.show()
 
+fig = plt.figure()
+ax = fig.add_subplot(111)
+ax.scatter(x_train, y_train, s=10, c='b', marker="s", label='first')
+ax.axline((0, weights[0]), slope=weights[1], color='C0', label='by slope')
+plt.show()
 
+# [1.0016837576010067, 1.0365414489166715] - 1 w
+# [0.5084156707118008, 1.0432069070032457] - 0.5 w
+# [0.01474600805071272, 1.0488390364250777] - 0 w

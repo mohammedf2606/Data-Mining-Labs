@@ -1,13 +1,9 @@
-import numpy as np
-
-
 def dot_product(vec1, vec2):
     assert len(vec1) == len(vec2)
     running_total = 0
     for i in range(len(vec1)):
-        running_total += vec1[i] + vec2[i]
+        running_total += vec1[i] * vec2[i]
     return running_total
-
 
 """
     :param learning_rate: Learning rate (0-1, typically 0.01)
@@ -34,7 +30,7 @@ def compute_basic_loss(predicted, actual):
     running_total = 0
 
     for i in range(len(actual)):
-        running_total += (actual[i] - predicted[i]) ** 2
+        running_total += (float(actual[i]) - predicted[i]) ** 2
 
     return running_total / len(actual)
 
@@ -62,6 +58,7 @@ def mss_gradient_descent_optimiser(learning_rate, weights, feature_vectors, targ
         derivative_j = (-2 / M) * running_total
         new_weights[j] = weights[j] - (learning_rate * derivative_j)
         # work out new weights by xj - (learning_rate * D)
+    print(new_weights)
     return new_weights
 
 
@@ -77,7 +74,7 @@ def batch_gradient_descent(M, X, w, y, a):
         feature_vector = X[feature_vector_index]
         predicted_scalar = dot_product(w, feature_vector)
         predicted.append(predicted_scalar)
-
+    print(compute_basic_loss(predicted, y))
     return mss_gradient_descent_optimiser(a, w, X, y, predicted)
 
 
