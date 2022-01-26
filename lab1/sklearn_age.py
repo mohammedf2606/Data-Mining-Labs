@@ -1,10 +1,7 @@
+from sklearn import linear_model
+from sklearn import metrics
 import pandas as pd
-import matplotlib.pyplot as plt
 import random as r
-import numpy as np
-
-from utils import gradient_descent as gd
-from utils.utils import compute_r2
 
 FILE_LOC = "./data.csv"
 
@@ -36,21 +33,8 @@ testset = [index_values[i][1] for i in random_test_indices]
 # actual plot
 
 x_train, y_train = zip(*trainset)
-x_test, y_test = zip(*testset)
 
-x_input = [[float(1), float(x)] for x in x_train]
-weights = [10 for i in range(len(x_input[0]))]
-LEARNING_RATE = 0.0001
-predicted = []
+lr = linear_model.LinearRegression()
+lr.fit(x_train, y_train)
 
-for _ in range(1000):
-    weights, predicted = gd.batch_gradient_descent(len(x_input), x_input, weights, y_train, LEARNING_RATE)
-
-print(compute_r2(predicted, y_train))
-
-plt.scatter(x_train, y_train, s=10, c='b', marker="s", label='first')
-
-ax = plt.gca()
-X_plot = np.linspace(ax.get_xlim()[0], ax.get_xlim()[1], 100)
-plt.plot(X_plot, weights[1]*X_plot + weights[0], color='C0', label='by slope')
-plt.show()
+print("Regression equation: y = " + lr.intercept_ + " + " + lr.coef_[0] + "x")

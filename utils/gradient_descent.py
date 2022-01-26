@@ -1,9 +1,4 @@
-def dot_product(vec1, vec2):
-    assert len(vec1) == len(vec2)
-    running_total = 0
-    for i in range(len(vec1)):
-        running_total += vec1[i] * vec2[i]
-    return running_total
+from utils.utils import dot_product
 
 """
     :param learning_rate: Learning rate (0-1, typically 0.01)
@@ -14,7 +9,6 @@ def dot_product(vec1, vec2):
 
 
 def basic_optimise(learning_rate, error, weights, inputs):
-    # return list(map(lambda w: w[1] + (learning_rate * w[1] * inputs[w[0]] * error), enumerate(weights)))
     return list(map(lambda w: w[1] + (learning_rate * w[1] * error), enumerate(weights)))
 
 
@@ -37,7 +31,6 @@ def compute_basic_loss(predicted, actual):
 
 """
 Optimise weights via BGD using mean sum of squares as loss function.
-
 """
 
 
@@ -58,12 +51,16 @@ def mss_gradient_descent_optimiser(learning_rate, weights, feature_vectors, targ
         derivative_j = (-2 / M) * running_total
         new_weights[j] = weights[j] - (learning_rate * derivative_j)
         # work out new weights by xj - (learning_rate * D)
-    print(new_weights)
     return new_weights
 
 
 """
-Basic batch gradient descent for a linear regression model using mean sum of squares as loss function 
+    Basic batch gradient descent for a linear regression model using mean sum of squares as loss function
+    :param M: Number of data inputs
+    :param X: List of data inputs (feature vectors, size M)
+    :param w: List of parameter values (weights)
+    :param y: List of target values (size M)
+    :param a: Learning rate (0-1, typically 0.01)
 """
 
 
@@ -74,8 +71,7 @@ def batch_gradient_descent(M, X, w, y, a):
         feature_vector = X[feature_vector_index]
         predicted_scalar = dot_product(w, feature_vector)
         predicted.append(predicted_scalar)
-    print(compute_basic_loss(predicted, y))
-    return mss_gradient_descent_optimiser(a, w, X, y, predicted)
+    return mss_gradient_descent_optimiser(a, w, X, y, predicted), predicted
 
 
 """
