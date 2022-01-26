@@ -1,34 +1,24 @@
 import matplotlib.pyplot as plt
-import pandas as pd
 import random as r
+import numpy as np
 
+from sklearn import datasets
 from sklearn import linear_model
 from sklearn import metrics
 
-FILE_LOC = "./data.csv"
 
-df = pd.read_csv(FILE_LOC, encoding='unicode_escape')
-age_expec = df.iloc[0:, 70:72]
+from utils import gradient_descent as gd
+from utils.utils import compute_r2
 
-# x and y data cleaning
+x_rand, y_rand, p = datasets.make_regression(n_samples=100, n_features=1, n_informative=1, noise=10, coef=True)
 
-age_expec.drop(age_expec.loc[age_expec["Male life expectancy, (2012-14)"] == '.'].index, inplace=True)
-age_expec.drop(age_expec.loc[age_expec["Female life expectancy, (2012-14)"] == '.'].index, inplace=True)
-age_expec = age_expec.dropna()
+train_size = int(len(x_rand)*0.9)
 
-x = age_expec["Male life expectancy, (2012-14)"]
-x = pd.to_numeric(x, errors='coerce').values.tolist()  # Force all values to float
-
-y = age_expec["Female life expectancy, (2012-14)"]
-y = pd.to_numeric(y, errors='coerce').values.tolist()  # Force all values to float
-
-train_size = int(len(x)*0.9)
-
-all_indices = list(range(len(x)))
+all_indices = list(range(len(x_rand)))
 random_train_indices = r.sample(all_indices, train_size)
 random_test_indices = list(set(all_indices) - set(random_train_indices))
 
-index_values = list(enumerate(zip(x, y)))  # Collection(index, (x,y))
+index_values = list(enumerate(zip(x_rand, y_rand)))  # Collection(index, (x,y))
 trainset = [index_values[i][1] for i in random_train_indices]  # (x,y)
 testset = [index_values[i][1] for i in random_test_indices]
 
@@ -38,6 +28,8 @@ x_train, y_train = zip(*trainset)
 x_test, y_test = zip(*testset)
 
 x_input = [[float(1), float(x)] for x in x_train]
+weights = [1 for i in range(len(x_input[0]))]
+LEARNING_RATE = 0.0001
 
 lr = linear_model.LinearRegression()
 lr.fit(x_input, y_train)
