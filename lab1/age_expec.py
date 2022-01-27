@@ -39,7 +39,7 @@ x_train, y_train = zip(*trainset)
 x_test, y_test = zip(*testset)
 
 x_input = [[float(1), float(x)] for x in x_train]
-weights = [10 for i in range(len(x_input[0]))]
+weights = [1 for i in range(len(x_input[0]))]
 LEARNING_RATE = 0.0001
 predicted = []
 
@@ -48,9 +48,11 @@ for _ in range(1000):
 
 print(compute_r2(predicted, y_train))
 
-plt.scatter(x_train, y_train, s=10, c='b', marker="s", label='first')
+plt.scatter(x_train, y_train, s=10, c='b', marker="x", label='train')
+plt.scatter(x_test, y_test, s=10, c='r', marker="o", label='test')
 
 ax = plt.gca()
 X_plot = np.linspace(ax.get_xlim()[0], ax.get_xlim()[1], 100)
 plt.plot(X_plot, weights[1]*X_plot + weights[0], color='C0', label='by slope')
+plt.legend(loc='upper left')
 plt.show()

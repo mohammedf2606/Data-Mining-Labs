@@ -28,8 +28,6 @@ x_train, y_train = zip(*trainset)
 x_test, y_test = zip(*testset)
 
 x_input = [[float(1), float(x)] for x in x_train]
-weights = [1 for i in range(len(x_input[0]))]
-LEARNING_RATE = 0.0001
 
 lr = linear_model.LinearRegression()
 lr.fit(x_input, y_train)
