@@ -13,8 +13,8 @@ age_expec = df.iloc[0:, 70:72]
 
 # x and y data cleaning
 
-age_expec.drop(age_expec.loc[age_expec["Male life expectancy, (2012-14)"] == '.'].index, inplace=True)
-age_expec.drop(age_expec.loc[age_expec["Female life expectancy, (2012-14)"] == '.'].index, inplace=True)
+age_expec.drop(age_expec.loc[age_expec["Male life expectancy, (2012-14)" or
+                                       "Female life expectancy, (2012-14)"] == '.'].index, inplace=True)
 age_expec = age_expec.dropna()
 
 x = age_expec["Male life expectancy, (2012-14)"]
