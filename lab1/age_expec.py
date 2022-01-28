@@ -1,10 +1,9 @@
 import pandas as pd
 import matplotlib.pyplot as plt
-import random as r
 import numpy as np
 
 from utils import gradient_descent as gd
-from utils.utils import compute_r2
+from utils.utils import compute_r2, random_partition
 
 FILE_LOC = "./data.csv"
 
@@ -23,15 +22,7 @@ x = pd.to_numeric(x, errors='coerce').values.tolist()  # Force all values to flo
 y = age_expec["Female life expectancy, (2012-14)"]
 y = pd.to_numeric(y, errors='coerce').values.tolist()  # Force all values to float
 
-train_size = int(len(x)*0.9)
-
-all_indices = list(range(len(x)))
-random_train_indices = r.sample(all_indices, train_size)
-random_test_indices = list(set(all_indices) - set(random_train_indices))
-
-index_values = list(enumerate(zip(x, y)))  # Collection(index, (x,y))
-trainset = [index_values[i][1] for i in random_train_indices]  # (x,y)
-testset = [index_values[i][1] for i in random_test_indices]
+trainset, testset = random_partition(x, y)
 
 # actual plot
 

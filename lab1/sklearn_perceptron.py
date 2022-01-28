@@ -1,8 +1,9 @@
 from sklearn import linear_model
 from sklearn import datasets
-import random as r
-import numpy as np
+from sklearn import metrics
 
+import numpy as np
+from utils.utils import random_partition
 import matplotlib.pyplot as plt
 
 x, y = datasets.make_classification(n_features=1, n_redundant=0, n_informative=1, n_classes=2,
@@ -31,18 +32,25 @@ x_input = [[1, x] for x in class0_train]
 print(class0_train)
 
 per = linear_model.Perceptron()
-per.fit(x_input, class0_train)
-y_hat = per.predict(class0_train)
+per.fit(x_train, y_train)
+y_hat = per.predict(x_test)
 
-print("Regression equation: y = " + str(per.intercept_) + " + " + str(per.coef_[1]) + "x")
+print("accuracy = %f" % (metrics.accuracy_score(y_test, y_hat, normalize=True)))
 
-plt.scatter(class0_train, class0_train, s=10, c='b', marker="o", label='train, class0')
-plt.scatter(class1_train, class1_train, s=10, c='r', marker="o", label='train, class1')
+x_train_class_1, y_train_class_1 = zip(*list(filter(lambda x: x[1] == 1, zip(x_train, y_train))))
+x_train_class_0, y_train_class_0 = zip(*list(filter(lambda x: x[1] == 0, zip(x_train, y_train))))
 
-plt.scatter(class0_test, class0_test, s=10, c='b', marker="x", label='class0')
-plt.scatter(class1_test, class1_test, s=10, c='r', marker="x", label='class1')
+x_test_class_1, y_test_class_1 = zip(*list(filter(lambda x: x[1] == 1, zip(x_test, y_test))))
+x_test_class_0, y_test_class_0 = zip(*list(filter(lambda x: x[1] == 0, zip(x_test, y_test))))
 
-plt.plot(class0_train, y_hat, color="black")
+plt.scatter(x_train_class_1, x_train_class_1, s=10, c='b', marker="o", label='train, class0')
+plt.scatter(x_train_class_0, x_train_class_0, s=10, c='r', marker="o", label='train, class1')
 
+plt.scatter(x_test_class_1, x_test_class_1, s=20, c='b', marker="x", label='test, class0')
+plt.scatter(x_test_class_0, x_test_class_0, s=20, c='r', marker="x", label='test, class1')
+
+y_plot = [per.intercept_ + j * per.coef_[0, 0] for j in x_train]
+
+plt.plot(x_train, y_plot, color="black", label='slope')
 plt.legend(loc='upper left')
 plt.show()

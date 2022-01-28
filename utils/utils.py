@@ -1,3 +1,6 @@
+import random as r
+
+
 def dot_product(vec1, vec2):
     assert len(vec1) == len(vec2)
     running_total = 0
@@ -15,3 +18,16 @@ def compute_r2(predicted, actual):
         population_variance += (actual[j] - y_mean) ** 2
     R_2 = 1 - (sum_squared_error / population_variance)
     return R_2
+
+
+# returns lists ([trainset], [testset]) of tuples [(x1,y1) ... (xn, yn)]
+def random_partition(x_rand, y_rand):
+    train_size = int(len(x_rand) * 0.9)
+    all_indices = list(range(len(x_rand)))
+    random_train_indices = r.sample(all_indices, train_size)
+    random_test_indices = list(set(all_indices) - set(random_train_indices))
+    index_values = list(enumerate(zip(x_rand, y_rand)))  # Collection(index, (x,y))
+    trainset = [index_values[i][1] for i in random_train_indices]  # (x,y)
+    testset = [index_values[i][1] for i in random_test_indices]
+
+    return trainset, testset
