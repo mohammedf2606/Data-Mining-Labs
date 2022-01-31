@@ -2,7 +2,6 @@ from sklearn import linear_model
 from sklearn import datasets
 from sklearn import metrics
 
-import numpy as np
 from utils.utils import random_partition
 import matplotlib.pyplot as plt
 
