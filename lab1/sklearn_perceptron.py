@@ -8,27 +8,10 @@ import matplotlib.pyplot as plt
 x, y = datasets.make_classification(n_features=1, n_redundant=0, n_informative=1, n_classes=2,
                                     n_clusters_per_class=1, n_samples=100)
 
-train_size = int(len(x) * 0.9)
+trainset, testset = random_partition(x, y)
 
-all_indices = list(range(len(x)))
-random_train_indices = r.sample(all_indices, train_size)
-random_test_indices = list(set(all_indices) - set(random_train_indices))
-
-x_unzip = list(zip(*x.tolist()))[0]
-
-class0_train = [x_unzip[i] for i in range(len(list(zip(x_unzip, y))))
-                for j in y if j == 0 and i in random_train_indices]
-class1_train = [x_unzip[i] for i in range(len(list(zip(x_unzip, y))))
-                for j in y if j == 1 and i in random_train_indices]
-
-class0_test = [x_unzip[i] for i in range(len(list(zip(x_unzip, y))))
-               for j in y if j == 0 and i in random_test_indices]
-class1_test = [x_unzip[i] for i in range(len(list(zip(x_unzip, y))))
-               for j in y if j == 1 and i in random_test_indices]
-
-x_input = [[1, x] for x in class0_train]
-
-print(class0_train)
+x_train, y_train = zip(*trainset)
+x_test, y_test = zip(*testset)  # [(x,y) ...] -> [x], [y]
 
 per = linear_model.Perceptron()
 per.fit(x_train, y_train)
