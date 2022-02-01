@@ -1,7 +1,6 @@
 from collections import Counter
 from prettytable import PrettyTable
 from sklearn.datasets import load_iris
-import numpy as np
 
 
 def make_table(feature_vectors, targets):
@@ -59,7 +58,7 @@ print(table_width)
 # (length, width): most_frequent
 most_frequent_pairs = make_matrix(length_data, width_data)
 
-correct_predictions = [True if i == j else False for i, j in zip(most_frequent_pairs.values(), target_classes)]
+correct_predictions = [i == j for i, j in zip(most_frequent_pairs.values(), target_classes)]
 score = sum(correct_predictions) / len(correct_predictions)
 error = (len(correct_predictions) - sum(correct_predictions)) / len(correct_predictions)
 print("Score: " + str(score) + "\n")
