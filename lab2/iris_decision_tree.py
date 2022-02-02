@@ -32,5 +32,24 @@ for el in confusion_matrix:
     confusion_matrix_table.add_row(el)
 print(confusion_matrix_table)
 
+print('\nPrecision Score:')
 precision = metrics.precision_score(y_test, y_hat, average=None)
-print(precision)
+for i, j in zip(iris.target_names, precision):
+    print(i + " = " + str(j))
+
+print('\nRecall Score:')
+recall = metrics.recall_score(y_test, y_hat, average=None)
+for i, j in zip(iris.target_names, recall):
+    print(i + " = " + str(j))
+
+print('\nf1 Score:')
+f1 = metrics.f1_score(y_test, y_hat, average=None)
+for i, j in zip(iris.target_names, recall):
+    print(i + " = " + str(j))
+
+decision_path = clf.decision_path(iris.data)
+print("\ndecision path:")
+print(decision_path)
+
+# output the tree to "dot" format for later visualising
+tree.export_graphviz(clf, out_file="iris-tree.dot", class_names=iris.target_names, impurity=True)
