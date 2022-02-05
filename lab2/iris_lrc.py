@@ -1,6 +1,8 @@
+import numpy as np
 import sklearn.datasets as data
 import sklearn.model_selection as model_select
 import sklearn.linear_model as linear_model
+import matplotlib.pyplot as plt
 from prettytable import PrettyTable
 from sklearn import metrics
 
@@ -47,3 +49,27 @@ print('\nf1 Score:')
 f1 = metrics.f1_score(y_test, y_hat, average=None)
 for i, j in zip(iris.target_names, recall):
     print(i + " = " + str(j))
+
+sepal_length = [i[0] for i in x]
+sepal_width = [i[1] for i in x]
+
+min_max_table = PrettyTable()
+min_max_table.field_names = ["", "min", "max"]
+min_max_table.add_row(["sepal length", min(sepal_length), max(sepal_length)])
+min_max_table.add_row(["sepal width", min(sepal_width), max(sepal_width)])
+
+print(min_max_table)
+
+x_pairs = []
+GRANULARITY = 0.1
+x0_range = np.arange(min(sepal_length), max(sepal_length), GRANULARITY)
+x1_range = np.arange(min(sepal_width), max(sepal_width), GRANULARITY)
+for i, j in zip(x0_range, x1_range):
+    x_pairs.append((round(i, 2), round(j, 2)))
+y_hat_pairs = clf.predict(x_pairs)
+print("mesh score = ", clf.score(x_pairs, y_hat_pairs))
+x0_mesh, x1_mesh = np.meshgrid(x0_range, x1_range)
+y_hat_mesh = y_hat_pairs.reshape(x0_mesh.shape)
+plt.pcolormesh(x0_mesh, x1_mesh, y_hat_mesh, shading="flat")
+plt.set_cmap("Blues")
+plt.plot()
