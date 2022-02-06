@@ -5,6 +5,7 @@ import sklearn.linear_model as linear_model
 import matplotlib.pyplot as plt
 from prettytable import PrettyTable
 from sklearn import metrics
+import sklearn.preprocessing as preprocess
 
 iris = data.load_iris()
 
@@ -61,7 +62,7 @@ min_max_table.add_row(["sepal width", min(sepal_width), max(sepal_width)])
 print(min_max_table)
 
 x_pairs = []
-GRANULARITY = 0.1
+GRANULARITY = 0.01
 x0_range = np.arange(min(sepal_length), max(sepal_length), GRANULARITY)
 x1_range = np.arange(min(sepal_width), max(sepal_width), GRANULARITY)
 for i, j in zip(x0_range, x1_range):
@@ -69,7 +70,22 @@ for i, j in zip(x0_range, x1_range):
 y_hat_pairs = clf.predict(x_pairs)
 print("mesh score = ", clf.score(x_pairs, y_hat_pairs))
 x0_mesh, x1_mesh = np.meshgrid(x0_range, x1_range)
-y_hat_mesh = y_hat_pairs.reshape(x0_mesh.shape)
-plt.pcolormesh(x0_mesh, x1_mesh, y_hat_mesh, shading="flat")
-plt.set_cmap("Blues")
-plt.plot()
+# y_hat_mesh = y_hat_pairs
+# plt.pcolormesh(x0_mesh, x1_mesh, y_hat_mesh, shading="flat")
+# plt.set_cmap("Blues")
+# plt.show()
+
+conf_scores = clf.decision_function(x_pairs)
+y_binary = preprocess.label_binarize(y_hat_pairs, classes=sorted(set(y)))
+false_pos = dict()
+true_pos = dict()
+for c in range(len(iris.target_names)):
+    false_pos[c], true_pos[c], tmp = metrics.roc_curve(y_binary[:, c], conf_scores[:, c])
+for c in range(len(iris.target_names)):
+    plt.plot(false_pos[c], true_pos[c], label=iris.target_names[c])
+plt.xlabel("false positive (FP) rate")
+plt.ylabel("true positive (TP) rate")
+print(false_pos)
+print(true_pos)
+plt.legend(loc="best")
+plt.show()

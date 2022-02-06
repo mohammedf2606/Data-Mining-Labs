@@ -38,6 +38,7 @@ for _ in range(1000):
     weights, predicted = gd.batch_gradient_descent(len(x_input), x_input, weights, y_train, LEARNING_RATE)
 
 print(compute_r2(predicted, y_train))
+print(gd.compute_basic_loss(predicted, y_train))
 
 plt.scatter(x_train, y_train, s=10, c='b', marker="x", label='train')
 plt.scatter(x_test, y_test, s=10, c='r', marker="o", label='test')
