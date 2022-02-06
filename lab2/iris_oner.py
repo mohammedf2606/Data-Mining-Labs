@@ -11,11 +11,9 @@ def make_table(feature_vectors, targets):
     for x, count in class_counter.items():
         if x[0] not in class_occurrences:
             class_occurrences[x[0]] = [0 for i in range(len(class_poss))]
-        if x[0] in class_occurrences:
-            temp_list = class_occurrences[x[0]]
-            temp_list[x[1]] = temp_list[x[1]] + count
-            class_occurrences[x[0]] = temp_list
-    most_frequent = [(i, j.index(max(j))) for (i, j) in list(class_occurrences.items())]
+        temp_list = class_occurrences[x[0]]
+        temp_list[x[1]] = temp_list[x[1]] + count
+        class_occurrences[x[0]] = temp_list
     rows = [(i, j, j.index(max(j))) for (i, j) in list(class_occurrences.items())]
     table = PrettyTable()
     table.field_names = ["Sepal length (cm)", "class frequencies: { 0, 1, 2 }", "most frequent"]
