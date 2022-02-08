@@ -12,7 +12,7 @@ iris = data.load_iris()
 x = iris.data[:, :2]
 y = iris.target
 
-x_train, x_test, y_train, y_test = model_select.train_test_split(x[:, :2], y, random_state=0)
+x_train, x_test, y_train, y_test = model_select.train_test_split(x, y, random_state=0)
 
 clf = linear_model.LogisticRegression(solver='lbfgs', multi_class='multinomial')
 clf.fit(x_train, y_train)
@@ -61,31 +61,51 @@ min_max_table.add_row(["sepal width", min(sepal_width), max(sepal_width)])
 
 print(min_max_table)
 
-x_pairs = []
 GRANULARITY = 0.01
-x0_range = np.arange(min(sepal_length), max(sepal_length), GRANULARITY)
-x1_range = np.arange(min(sepal_width), max(sepal_width), GRANULARITY)
-for i, j in zip(x0_range, x1_range):
-    x_pairs.append((round(i, 2), round(j, 2)))
-y_hat_pairs = clf.predict(x_pairs)
-print("mesh score = ", clf.score(x_pairs, y_hat_pairs))
-x0_mesh, x1_mesh = np.meshgrid(x0_range, x1_range)
-# y_hat_mesh = y_hat_pairs
-# plt.pcolormesh(x0_mesh, x1_mesh, y_hat_mesh, shading="flat")
-# plt.set_cmap("Blues")
-# plt.show()
+x0_min = np.min(x[:, 0]) - GRANULARITY
+x0_max = np.max(x[:, 0]) + GRANULARITY
+x1_min = np.min(x[:, 1]) - GRANULARITY
+x1_max = np.max(x[:, 1]) + GRANULARITY
+x0_range = np.arange(x0_min, x0_max, GRANULARITY)
+x1_range = np.arange(x1_min, x1_max, GRANULARITY)
 
-conf_scores = clf.decision_function(x_pairs)
+X_pairs = np.zeros((len(x0_range) * len(x1_range), 2))
+i = 0
+for i1 in range(len(x1_range)):
+    for i0 in range(len(x0_range)):
+        X_pairs[i] = np.array([x0_range[i0], x1_range[i1]])
+        i += 1
+y_hat_pairs = clf.predict(X_pairs)
+print(X_pairs)
+#print("mesh score = ", clf.score(X_pairs, y_hat_pairs))
+
+x0_mesh, x1_mesh = np.meshgrid(x0_range, x1_range)
+# print(y_hat_pairs)
+y_hat_mesh = y_hat_pairs.reshape(x0_mesh.shape)
+
+markers = ['o', '<', 's']
+colours = [(1, 0, 0, 1), (0, 1, 0, 0.7), (0, 0, 1, 0.5)]
+for i in range(len(x_train)):
+    plt.plot(x_train[i, 0], x_train[i, 1], marker=markers[y_train[i]],
+             markeredgecolor='w', markerfacecolor=colours[y_train[i]], markersize=9)
+for i in range(len(x_test)):
+    plt.plot(x_test[i, 0], x_test[i, 1], marker=markers[y_test[i]],
+             markeredgecolor='w', markerfacecolor=colours[y_test[i]], markersize=9)
+plt.pcolormesh(x0_mesh, x1_mesh, y_hat_mesh, shading="auto")
+plt.set_cmap("Blues")
+plt.show()
+
+conf_scores = clf.decision_function(X_pairs)
 y_binary = preprocess.label_binarize(y_hat_pairs, classes=sorted(set(y)))
 false_pos = dict()
 true_pos = dict()
 for c in range(len(iris.target_names)):
-    false_pos[c], true_pos[c], tmp = metrics.roc_curve(y_binary[:, c], conf_scores[:, c])
+    (false_pos[c], true_pos[c], tmp) = metrics.roc_curve(y_binary[:, c], conf_scores[:, c])
 for c in range(len(iris.target_names)):
     plt.plot(false_pos[c], true_pos[c], label=iris.target_names[c])
 plt.xlabel("false positive (FP) rate")
 plt.ylabel("true positive (TP) rate")
-print(false_pos)
-print(true_pos)
+#print(false_pos)
+#print(true_pos)
 plt.legend(loc="best")
 plt.show()
