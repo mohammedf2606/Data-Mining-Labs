@@ -1,3 +1,5 @@
+from pprint import pp
+
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
@@ -7,8 +9,9 @@ import sklearn.datasets as datasets
 
 def between_cluster_score(K, centres):
     distances = cdist(centres, centres, 'euclidean')
-    square_dist = [i ** 2 for i in distances]
-    return sum(sum(square_dist))/2
+    square_dist = [(i ** 2).tolist() for i in distances]
+    sum_list = [sum(d) for d in square_dist]
+    return sum(sum_list)/2
 
 
 def kmeans(x, K, no_of_iter):
@@ -46,25 +49,26 @@ def main():
 
     within_list = []
     between_list = []
-    for K in range(2, 9):
+    K_range = list(range(2, 9))
+    for K in K_range:
         labels, centres = kmeans(data, K, 1000)
 
         u_labels = np.unique(labels)
-        for i in u_labels:
-            plt.scatter(data.loc[labels == i, 0], data.loc[labels == i, 1], label=i)
-        plt.legend(loc='best')
-        plt.show()
+        # for i in u_labels:
+        #     plt.scatter(data.loc[labels == i, 0], data.loc[labels == i, 1], label=i)
+        # plt.legend(loc='best')
+        # plt.show()
 
         within = within_cluster_score(data, K, centres)
         within_list.append(within)
-        # print("Within Cluster score: " + str(within))
+        print("Within Cluster score: " + str(within))
         between = between_cluster_score(K, centres)
         between_list.append(between)
-        # print("Between Cluster " + str(between))
+        print("Between Cluster score: " + str(between))
         # print("Score: " + str(between/within))
 
-    plt.plot(within_list, label="Within Cluster")
-    plt.plot(between_list, label="Between Cluster")
+    plt.plot(K_range, within_list, label="Within Cluster")
+    plt.plot(K_range, between_list, label="Between Cluster")
     plt.legend(loc='best')
     plt.show()
 

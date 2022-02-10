@@ -4,8 +4,9 @@ import sklearn.cluster as cluster
 import sklearn.datasets as data
 import matplotlib.pyplot as plt
 import sklearn.metrics as metrics
+from prettytable import PrettyTable
 
-from clustering import between_cluster_score
+from clustering import between_cluster_score, within_cluster_score
 
 X, clusters = data._samples_generator.make_blobs(n_samples=100, n_features=2, cluster_std=1.0)
 
@@ -15,25 +16,31 @@ data = pd.DataFrame(zip(x, y))
 
 within_list = []
 between_list = []
-for K in range(2, 10):
+SC_list = []
+CH_list = []
+table = PrettyTable()
+table.field_names = ["K", "WC", "BC", "score", "inertia", "silhouette", "Calinski-Harabasz"]
+K_range = list(range(2, 10))
+for K in K_range:
     km = cluster.KMeans(n_clusters=K)
     km.fit(X)
     centres = km.cluster_centers_
-    # labels = km.labels_
-    # u_labels = np.unique(labels)
-    # # for i in km.labels_:
-    # #     plt.scatter(data.loc[labels == i, 0], data.loc[labels == i, 1], label=i)
-    # # plt.legend(loc='best')
-    # # plt.show()
-
-    within_list.append(km.inertia_)
-    # print("Within Cluster score: " + str(within))
+    within = within_cluster_score(data, K, centres)
+    within_list.append(within)
     between = between_cluster_score(K, centres)
     between_list.append(between)
-    # print("Between Cluster " + str(between))
-    # print("Score: " + str(between/within))
+    score = between/within
+    SC = metrics.silhouette_score(X, km.labels_, metric="euclidean")
+    SC_list.append(SC)
+    CH = metrics.calinski_harabasz_score(X, km.labels_)
+    CH_list.append(CH)
+    table.add_row([K, within, between, score, km.inertia_, SC, CH])
 
-plt.plot(within_list, label="Within Cluster")
-plt.plot(between_list, label="Between Cluster")
+plt.plot(K_range, within_list, label="Within Cluster")
+plt.plot(K_range, between_list, label="Between Cluster")
+plt.plot(K_range, SC_list, label="Silhouette score")
+plt.plot(K_range, CH_list, label="Calinski-Harabasz score")
 plt.legend(loc='best')
 plt.show()
+
+print(table)
