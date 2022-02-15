@@ -1,13 +1,13 @@
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import OneHotEncoder, LabelEncoder
+from sklearn.tree import DecisionTreeClassifier
 
 
 # Part 1: Decision Trees with Categorical Attributes
 
 # Return a pandas dataframe containing the data set that needs to be extracted from the data_file.
 # data_file will be populated with the string 'adult.csv'.
-from sklearn.tree import DecisionTreeClassifier
 
 
 def read_csv_1(data_file):
@@ -58,7 +58,7 @@ def data_frame_without_missing_values(df):
 def one_hot_encoding(df):
 	df_temp = df.drop(columns="class")
 	one_hot = OneHotEncoder(handle_unknown='ignore')
-	one_hot_encoded = one_hot.fit_transform(df_temp).toarray()
+	one_hot_encoded = one_hot.fit_transform(df_temp).astype(int).toarray()
 	attribute_names = one_hot.get_feature_names_out(column_names(df_temp))
 	one_hot_df = pd.DataFrame(one_hot_encoded, columns=attribute_names)
 	return one_hot_df
@@ -98,6 +98,7 @@ if __name__ == "__main__":
 	print(bachelors_masters_percentage(df))
 	print(len(data_frame_without_missing_values(df)))
 	x_train = one_hot_encoding(df)
+	print(x_train)
 	y_train = label_encoding(df)
 	y_pred = dt_predict(x_train, y_train)
 	print(dt_error_rate(y_pred, y_train))
