@@ -2,6 +2,7 @@
 
 # Return a pandas dataframe containing the data set that needs to be extracted from the data_file.
 # data_file will be populated with the string 'wholesale_customers.csv'.
+import matplotlib.pyplot as plt
 import pandas as pd
 from sklearn import metrics
 from sklearn.cluster import KMeans, AgglomerativeClustering
@@ -38,7 +39,8 @@ def standardize(df):
 # y should contain values in the set {0,1,...,k-1}.
 def kmeans(df, k):
     km = KMeans(n_clusters=k)
-    km.fit(df)
+    for _ in range(10):
+        km.fit(df)
     return km.predict(df)
 
 
@@ -95,18 +97,22 @@ def cluster_evaluation(df):
 # Given the performance evaluation dataframe produced by the cluster_evaluation function,
 # return the best computed Silhouette score.
 def best_clustering_score(rdf):
-    return rdf.max()
+    print(rdf)
+    return rdf["Silhouette Score"].max()
 
 
 # Run some clustering algorithm of your choice with k=3 and generate a scatter plot for each pair of attributes.
 # Data points in different clusters should appear with different colors.
 def scatter_plots(df):
-    pass
+    plt.scatter(df)
+    plt.show()
 
 
 if __name__ == "__main__":
     df = read_csv_2('./data/wholesale_customers.csv')
     print(summary_statistics(df))
-    print(cluster_evaluation(df))
+    rdf = cluster_evaluation(df)
+    print(best_clustering_score(rdf))
+    scatter_plots(df)
 
 
