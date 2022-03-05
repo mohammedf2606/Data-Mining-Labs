@@ -35,17 +35,19 @@ def date_most_popular_tweets(df):
 
 # Modify the dataframe df by converting all tweets to lower case.
 def lower_case(df):
-	pass
+	df["OriginalTweet"] = df["OriginalTweet"].str.lower()
+	return df
 
 
 # Modify the dataframe df by replacing each characters which is not alphabetic or whitespace with a whitespace.
 def remove_non_alphabetic_chars(df):
-	pass
+	df["OriginalTweet"] = df["OriginalTweet"].str.replace('[^a-zA-Z\s]', " ", regex=True)
+	return df
 
 
 # Modify the dataframe df with tweets after removing characters which are not alphabetic or whitespaces.
 def remove_multiple_consecutive_whitespaces(df):
-	pass
+	df["OriginalTweet"] = df["OriginalTweet"]
 
 
 # Given a dataframe where each tweet is one string with words separated by single whitespaces,
@@ -101,3 +103,6 @@ if __name__ == '__main__':
 	print(get_sentiments(df))
 	print(second_most_popular_sentiment(df))
 	print(date_most_popular_tweets(df))
+	# print(lower_case(df)["OriginalTweet"])
+	print(df["OriginalTweet"].iloc[0])
+	print(remove_non_alphabetic_chars(df)["OriginalTweet"].iloc[0])
