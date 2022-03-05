@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 from sklearn import metrics
 from sklearn.cluster import KMeans, AgglomerativeClustering
+import itertools
 
 
 def read_csv_2(data_file):
@@ -41,7 +42,7 @@ def kmeans(df, k):
     km = KMeans(n_clusters=k)
     for _ in range(10):
         km.fit(df)
-    return km.predict(df)
+    return pd.Series(km.predict(df))
 
 
 # Given a dataframe df and a number of clusters k, return a pandas series y
@@ -50,7 +51,7 @@ def kmeans(df, k):
 def agglomerative(df, k):
     ac = AgglomerativeClustering(n_clusters=k, linkage='average', affinity='euclidean')
     y_pred = ac.fit_predict(df)
-    return y_pred
+    return pd.Series(y_pred)
 
 
 # Given a data set X and an assignment to clusters y
@@ -104,15 +105,25 @@ def best_clustering_score(rdf):
 # Run some clustering algorithm of your choice with k=3 and generate a scatter plot for each pair of attributes.
 # Data points in different clusters should appear with different colors.
 def scatter_plots(df):
-    plt.scatter(df)
-    plt.show()
+    K = 3
+    attribute_pairs = list(itertools.combinations(df.columns, 2))
+    print(attribute_pairs)
+    for pair in attribute_pairs:
+        pair_to_list = list(pair)
+        y_hat = kmeans(df[pair_to_list], K)
+        plt.scatter(df[pair_to_list][pair[0]], df[pair_to_list][pair[1]], c=y_hat)
+        plt.xlabel(pair[0])
+        plt.ylabel(pair[1])
+        plt.show()
 
 
 if __name__ == "__main__":
     df = read_csv_2('./data/wholesale_customers.csv')
     print(summary_statistics(df))
     rdf = cluster_evaluation(df)
-    print(best_clustering_score(rdf))
+    print(rdf)
+    # print(kmeans(df, 3))
+    # print(best_clustering_score(rdf))
     scatter_plots(df)
 
 

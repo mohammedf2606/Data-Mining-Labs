@@ -69,7 +69,7 @@ def one_hot_encoding(df):
 # converted to numeric using label encoding. 
 def label_encoding(df):
 	label_enc = LabelEncoder()
-	return pd.DataFrame(label_enc.fit_transform(df['class']), columns=['class'])
+	return pd.Series(label_enc.fit_transform(df['class']))
 
 
 # Given a training set X_train containing the input attribute values 
@@ -79,27 +79,32 @@ def label_encoding(df):
 def dt_predict(X_train, y_train):
 	clf = DecisionTreeClassifier(random_state=0)
 	clf.fit(X_train, y_train)
-	return clf.predict(X_train)
+	return pd.Series(clf.predict(X_train))
 
 
 # Given a pandas series y_pred with the predicted labels and a pandas series y_true with the true labels,
 # compute the error rate of the classifier that produced y_pred.  
 def dt_error_rate(y_pred, y_true):
-	correct_predictions = [i == j for i, j in zip(y_pred, y_true)]
-	return len(correct_predictions)/len(y_true) * 100
+	count = 0
+	for i in range(len(y_true)):
+		if y_pred[i] == y_true[i]:
+			count += 1
+	return 100 - (count/len(y_true) * 100)
 
 
 if __name__ == "__main__":
 	df = read_csv_1('./data/adult.csv')
-	print(num_rows(df))
-	print(column_names(df))
-	print(missing_values(df))
-	print(columns_with_missing_values(df))
-	print(bachelors_masters_percentage(df))
-	print(len(data_frame_without_missing_values(df)))
+	# print(num_rows(df))
+	# print(column_names(df))
+	# print(missing_values(df))
+	# print(columns_with_missing_values(df))
+	# print(bachelors_masters_percentage(df))
+	# print(len(data_frame_without_missing_values(df)))
 	x_train = one_hot_encoding(df)
-	print(x_train)
+	# print(x_train)
 	y_train = label_encoding(df)
+	# print(y_train)
 	y_pred = dt_predict(x_train, y_train)
+	print(y_pred)
 	print(dt_error_rate(y_pred, y_train))
 
