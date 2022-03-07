@@ -3,12 +3,12 @@
 # Return a pandas dataframe containing the data set.
 # Specify a 'latin-1' encoding when reading the data.
 # data_file will be populated with the string 'wholesale_customers.csv'.
-from itertools import islice
+import re
 
+from nltk.stem import PorterStemmer
 import pandas as pd
 from collections import Counter
 import requests
-
 
 
 def read_csv_3(data_file):
@@ -72,22 +72,25 @@ def count_words_with_repetitions(tdf):
 
 # Given dataframe tdf with the tweets tokenized, return the number of distinct words in all tweets.
 def count_words_without_repetitions(tdf):
-	list_tweets = [x for x in tdf["OriginalTweet"]]
-	unzip_list_tweets = list(*zip(*list_tweets))
-	unique_words = set(unzip_list_tweets)
+	list_tweets = []
+	for x in tdf["OriginalTweet"]:
+		list_tweets.extend(x)
+	unique_words = set(list_tweets)
 	return len(unique_words)
 
 
-# Given dataframe tdf with the tweets tokenized, return a list with the k distinct words that are most frequent in the tweets.
+# Given dataframe tdf with the tweets tokenized, return a list with the
+# k distinct words that are most frequent in the tweets.
 def frequent_words(tdf, k):
-	list_tweets = [x for x in tdf["OriginalTweet"]]
-	unzip_list_tweets = list(*zip(*list_tweets))
-	count = Counter(unzip_list_tweets)
-	frequent_words = []
+	list_tweets = []
+	for x in tdf["OriginalTweet"]:
+		list_tweets.extend(x)
+	count = Counter(list_tweets)
+	frequent = []
 	most_common = count.most_common(k)
 	for item in most_common:
-		frequent_words.append(item[0])
-	return frequent_words
+		frequent.append(item[0])
+	return frequent
 
 
 # Given dataframe tdf with the tweets tokenized, remove stop words and words with <=2 characters from each tweet.
@@ -96,14 +99,22 @@ def frequent_words(tdf, k):
 def remove_stop_words(tdf):
 	r = requests.get("https://raw.githubusercontent.com/fozziethebeat/S-Space/master/data/english-stop-words-large.txt")
 	stop_words = r.content.decode("utf-8").split("\n")
-	for word in stop_words:
-		tdf["OriginalTweet"] =
-	tdf["OriginalTweet"] = tdf["OriginalTweet"].replace("\w{3,}", "", regex=True)
+	reg = re.compile("\w{3,}")
+	for idx, lst in enumerate(tdf["OriginalTweet"]):
+		for word in stop_words:
+			while word in lst:
+				tdf["OriginalTweet"].loc[idx].remove(word)
+		tdf["OriginalTweet"].loc[idx] = list(filter(reg.match, lst))
 	return tdf
+
 
 # Given dataframe tdf with the tweets tokenized, reduce each word in every tweet to its stem.
 def stemming(tdf):
-	pass
+	porter = PorterStemmer()
+	for idx, lst in enumerate(tdf["OriginalTweet"]):
+		stemmed = [porter.stem(x) for x in lst]
+		tdf["OriginalTweet"].loc[idx] = stemmed
+	return tdf
 
 
 # Given a pandas dataframe df with the original coronavirus_tweets.csv data set,
@@ -126,12 +137,15 @@ if __name__ == '__main__':
 	print(get_sentiments(df))
 	print(second_most_popular_sentiment(df))
 	print(date_most_popular_tweets(df))
-	# print(lower_case(df)["OriginalTweet"])
-	print(df["OriginalTweet"].iloc[0])
+	df = lower_case(df)
 	print(remove_non_alphabetic_chars(df)["OriginalTweet"].iloc[0])
 	print(remove_multiple_consecutive_whitespaces(df)["OriginalTweet"].iloc[0])
 	tdf = tokenize(df)
 	print(count_words_with_repetitions(tdf))
 	print(count_words_without_repetitions(tdf))
 	print(frequent_words(tdf, 10))
-	print(remove_stop_words(tdf)["OriginalTweet"])
+	tdf = remove_stop_words(tdf)
+	print(tdf["OriginalTweet"])
+	print(frequent_words(tdf, 10))
+	print(stemming(tdf)["OriginalTweet"])
+
