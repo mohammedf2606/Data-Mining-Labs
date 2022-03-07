@@ -1,3 +1,5 @@
+from pprint import pprint
+
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import OneHotEncoder, LabelEncoder
@@ -42,7 +44,7 @@ def columns_with_missing_values(df):
 def bachelors_masters_percentage(df):
 	education = df['education']
 	bachelors_masters = [x for x in education if x == "Bachelors" or x == "Masters"]
-	return round(len(bachelors_masters)/len(education) * 100, 1)
+	return round(len(bachelors_masters)/len(education) * 100, 3)
 
 
 # Return a pandas dataframe (new copy) obtained from the pandas dataframe df 

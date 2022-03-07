@@ -3,9 +3,12 @@
 # Return a pandas dataframe containing the data set.
 # Specify a 'latin-1' encoding when reading the data.
 # data_file will be populated with the string 'wholesale_customers.csv'.
-from pprint import pprint
+from itertools import islice
 
 import pandas as pd
+from collections import Counter
+import requests
+
 
 
 def read_csv_3(data_file):
@@ -47,36 +50,56 @@ def remove_non_alphabetic_chars(df):
 
 # Modify the dataframe df with tweets after removing characters which are not alphabetic or whitespaces.
 def remove_multiple_consecutive_whitespaces(df):
-	df["OriginalTweet"] = df["OriginalTweet"]
+	df["OriginalTweet"] = df["OriginalTweet"].str.replace('\s+', ' ', regex=True)
+	return df
 
 
 # Given a dataframe where each tweet is one string with words separated by single whitespaces,
 # tokenize every tweet by converting it into a list of words (strings).
 def tokenize(df):
-	pass
+	df["OriginalTweet"] = df["OriginalTweet"].str.split()
+	return df
 
 
 # Given dataframe tdf with the tweets tokenized, return the number of words in all tweets including repetitions.
 def count_words_with_repetitions(tdf):
-	pass
+	list_tweets = [x for x in tdf["OriginalTweet"]]
+	count = 0
+	for tweet in list_tweets:
+		count += len(tweet)
+	return count
 
 
 # Given dataframe tdf with the tweets tokenized, return the number of distinct words in all tweets.
 def count_words_without_repetitions(tdf):
-	pass
+	list_tweets = [x for x in tdf["OriginalTweet"]]
+	unzip_list_tweets = list(*zip(*list_tweets))
+	unique_words = set(unzip_list_tweets)
+	return len(unique_words)
 
 
 # Given dataframe tdf with the tweets tokenized, return a list with the k distinct words that are most frequent in the tweets.
 def frequent_words(tdf, k):
-	pass
+	list_tweets = [x for x in tdf["OriginalTweet"]]
+	unzip_list_tweets = list(*zip(*list_tweets))
+	count = Counter(unzip_list_tweets)
+	frequent_words = []
+	most_common = count.most_common(k)
+	for item in most_common:
+		frequent_words.append(item[0])
+	return frequent_words
 
 
 # Given dataframe tdf with the tweets tokenized, remove stop words and words with <=2 characters from each tweet.
 # The function should download the list of stop words via:
 # https://raw.githubusercontent.com/fozziethebeat/S-Space/master/data/english-stop-words-large.txt
 def remove_stop_words(tdf):
-	pass
-
+	r = requests.get("https://raw.githubusercontent.com/fozziethebeat/S-Space/master/data/english-stop-words-large.txt")
+	stop_words = r.content.decode("utf-8").split("\n")
+	for word in stop_words:
+		tdf["OriginalTweet"] =
+	tdf["OriginalTweet"] = tdf["OriginalTweet"].replace("\w{3,}", "", regex=True)
+	return tdf
 
 # Given dataframe tdf with the tweets tokenized, reduce each word in every tweet to its stem.
 def stemming(tdf):
@@ -106,3 +129,9 @@ if __name__ == '__main__':
 	# print(lower_case(df)["OriginalTweet"])
 	print(df["OriginalTweet"].iloc[0])
 	print(remove_non_alphabetic_chars(df)["OriginalTweet"].iloc[0])
+	print(remove_multiple_consecutive_whitespaces(df)["OriginalTweet"].iloc[0])
+	tdf = tokenize(df)
+	print(count_words_with_repetitions(tdf))
+	print(count_words_without_repetitions(tdf))
+	print(frequent_words(tdf, 10))
+	print(remove_stop_words(tdf)["OriginalTweet"])

@@ -1,3 +1,4 @@
+import random
 from collections import Counter
 from prettytable import PrettyTable
 from sklearn.datasets import load_iris
@@ -29,8 +30,13 @@ def make_matrix(length, width):
             if i[2] != j[2]:
                 if i[1][i[2]] > j[1][j[2]]:
                     classification_matrix[(i[0], j[0])] = i[2]
-                else:
+                elif i[1][i[2]] < j[1][j[2]]:
                     classification_matrix[(i[0], j[0])] = j[2]
+                else:
+                    if random.random() < 0.5:
+                        classification_matrix[(i[0], j[0])] = i[2]
+                    else:
+                        classification_matrix[(i[0], j[0])] = j[2]
             else:
                 classification_matrix[(i[0], j[0])] = i[2]
     return classification_matrix
@@ -55,6 +61,8 @@ print(table_width)
 
 # (length, width): most_frequent
 most_frequent_pairs = make_matrix(length_data, width_data)
+
+print(most_frequent_pairs)
 
 correct_predictions = [i == j for i, j in zip(most_frequent_pairs.values(), target_classes)]
 score = sum(correct_predictions) / len(correct_predictions)

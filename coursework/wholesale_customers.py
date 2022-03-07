@@ -119,6 +119,7 @@ def scatter_plots(df):
 
 if __name__ == "__main__":
     df = read_csv_2('./data/wholesale_customers.csv')
+    print(df)
     print(summary_statistics(df))
     rdf = cluster_evaluation(df)
     print(rdf)
