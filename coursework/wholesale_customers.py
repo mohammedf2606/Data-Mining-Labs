@@ -98,7 +98,6 @@ def cluster_evaluation(df):
 # Given the performance evaluation dataframe produced by the cluster_evaluation function,
 # return the best computed Silhouette score.
 def best_clustering_score(rdf):
-    print(rdf)
     return rdf["Silhouette Score"].max()
 
 
@@ -107,7 +106,6 @@ def best_clustering_score(rdf):
 def scatter_plots(df):
     K = 3
     attribute_pairs = list(itertools.combinations(df.columns, 2))
-    print(attribute_pairs)
     for pair in attribute_pairs:
         pair_to_list = list(pair)
         y_hat = kmeans(df[pair_to_list], K)
@@ -115,16 +113,5 @@ def scatter_plots(df):
         plt.xlabel(pair[0])
         plt.ylabel(pair[1])
         plt.show()
-
-
-if __name__ == "__main__":
-    df = read_csv_2('./data/wholesale_customers.csv')
-    print(df)
-    print(summary_statistics(df))
-    rdf = cluster_evaluation(df)
-    print(rdf)
-    # print(kmeans(df, 3))
-    # print(best_clustering_score(rdf))
-    scatter_plots(df)
 
 

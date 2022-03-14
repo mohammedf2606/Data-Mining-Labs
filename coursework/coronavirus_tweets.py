@@ -3,14 +3,10 @@
 # Return a pandas dataframe containing the data set.
 # Specify a 'latin-1' encoding when reading the data.
 # data_file will be populated with the string 'wholesale_customers.csv'.
-from datetime import timedelta
-from pprint import pprint
-
 from nltk.stem import PorterStemmer
 import pandas as pd
 from collections import Counter
 import requests
-from timeit import default_timer as timer
 
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.naive_bayes import MultinomialNB
@@ -135,7 +131,6 @@ def mnb_predict(df):
     X = df["OriginalTweet"].to_list()
     X_cv = CountVectorizer(analyzer="word", ngram_range=(0, 4))
     X = X_cv.fit_transform(X)
-    print(X)
     y = df["Sentiment"].to_list()
     y_cv = LabelEncoder()
     y = y_cv.fit_transform(y)
@@ -155,30 +150,3 @@ def mnb_accuracy(y_pred, y_true):
         if y_pred[i] == y_true[i]:
             count += 1
     return round(count / len(y_true), 3)
-
-
-if __name__ == '__main__':
-    df = read_csv_3("data/coronavirus_tweets.csv")
-    # print(get_sentiments(df))
-    # print(second_most_popular_sentiment(df))
-    # print(date_most_popular_tweets(df))
-    # df = lower_case(df)
-    # remove_non_alphabetic_chars(df)
-    # remove_multiple_consecutive_whitespaces(df)
-    # tdf = tokenize(df)
-    # print(count_words_with_repetitions(tdf))
-    # print(count_words_without_repetitions(tdf))
-    # print(frequent_words(tdf, 10))
-    # start = timer()
-    # tdf = remove_stop_words(tdf)
-    # end = timer()
-    # print(timedelta(seconds=end - start))
-    # print(tdf["OriginalTweet"])
-    # print(frequent_words(tdf, 10))
-    # start = timer()
-    # print(stemming(tdf)["OriginalTweet"])
-    # end = timer()
-    # print(timedelta(seconds=end - start))
-    y_hat = mnb_predict(df)
-    print(mnb_accuracy(y_hat, df["Sentiment"].to_list()))
-

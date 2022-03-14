@@ -1,7 +1,4 @@
-from pprint import pprint
-
 import pandas as pd
-from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import OneHotEncoder, LabelEncoder
 from sklearn.tree import DecisionTreeClassifier
 
@@ -92,21 +89,4 @@ def dt_error_rate(y_pred, y_true):
 		if y_pred[i] == y_true[i]:
 			count += 1
 	return 100 - (count/len(y_true) * 100)
-
-
-if __name__ == "__main__":
-	df = read_csv_1('./data/adult.csv')
-	# print(num_rows(df))
-	# print(column_names(df))
-	# print(missing_values(df))
-	# print(columns_with_missing_values(df))
-	# print(bachelors_masters_percentage(df))
-	# print(len(data_frame_without_missing_values(df)))
-	x_train = one_hot_encoding(df)
-	# print(x_train)
-	y_train = label_encoding(df)
-	# print(y_train)
-	y_pred = dt_predict(x_train, y_train)
-	print(y_pred)
-	print(dt_error_rate(y_pred, y_train))
 
