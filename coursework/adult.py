@@ -7,8 +7,6 @@ from sklearn.tree import DecisionTreeClassifier
 
 # Return a pandas dataframe containing the data set that needs to be extracted from the data_file.
 # data_file will be populated with the string 'adult.csv'.
-
-
 def read_csv_1(data_file):
 	df = pd.read_csv(data_file)
 	return df.drop(columns="fnlwgt")
