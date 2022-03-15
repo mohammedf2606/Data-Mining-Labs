@@ -1,4 +1,5 @@
 import pandas as pd
+from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import OneHotEncoder, LabelEncoder
 from sklearn.tree import DecisionTreeClassifier
 
@@ -86,5 +87,4 @@ def dt_error_rate(y_pred, y_true):
 	for i in range(len(y_true)):
 		if y_pred[i] == y_true[i]:
 			count += 1
-	return 100 - (count/len(y_true) * 100)
-
+	return 1 - count/len(y_true)

@@ -129,7 +129,7 @@ def stemming(tdf):
 def mnb_predict(df):
     mnb = MultinomialNB()
     X = df["OriginalTweet"].to_list()
-    X_cv = CountVectorizer(analyzer="word", ngram_range=(0, 4))
+    X_cv = CountVectorizer(analyzer="word", ngram_range=(4, 6))
     X = X_cv.fit_transform(X)
     y = df["Sentiment"].to_list()
     y_cv = LabelEncoder()
