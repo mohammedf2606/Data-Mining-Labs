@@ -7,6 +7,8 @@ from nltk.stem import PorterStemmer
 import pandas as pd
 from collections import Counter
 import requests
+from timeit import default_timer as timer
+from datetime import timedelta
 
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.naive_bayes import MultinomialNB
@@ -44,7 +46,7 @@ def lower_case(df):
     return df
 
 
-# Modify the dataframe df by replacing each characters which is not alphabetic or whitespace with a whitespace.
+# Modify the dataframe df by replacing each characters which is (not alphabetic or whitespace) with a whitespace.
 def remove_non_alphabetic_chars(df):
     df["OriginalTweet"] = df["OriginalTweet"].str.replace('[^a-zA-Z\s]', " ", regex=True)
     return df
@@ -128,7 +130,7 @@ def stemming(tdf):
 # as a 1d array (numpy.ndarray). 
 def mnb_predict(df):
     mnb = MultinomialNB()
-    X = df["OriginalTweet"].to_list()
+    X = df["OriginalTweet"]
     X_cv = CountVectorizer(analyzer="word", ngram_range=(4, 6))
     X = X_cv.fit_transform(X)
     y = df["Sentiment"].to_list()
@@ -150,3 +152,30 @@ def mnb_accuracy(y_pred, y_true):
         if y_pred[i] == y_true[i]:
             count += 1
     return round(count / len(y_true), 3)
+
+
+if __name__ == '__main__':
+    df = read_csv_3("data/coronavirus_tweets.csv")
+    # print(get_sentiments(df))
+    # print(second_most_popular_sentiment(df))
+    # print(date_most_popular_tweets(df))
+    # print(lower_case(df)["OriginalTweet"])
+    # print(remove_non_alphabetic_chars(df)["OriginalTweet"])
+    # print(remove_multiple_consecutive_whitespaces(df)["OriginalTweet"])
+    #
+    # tdf = tokenize(df)
+    # print(count_words_with_repetitions(tdf))
+    # print(count_words_without_repetitions(tdf))
+    # print(frequent_words(tdf, 10))
+    # start = timer()
+    # tdf = remove_stop_words(tdf)
+    # end = timer()
+    # print(timedelta(seconds=end - start))
+    # print(tdf["OriginalTweet"])
+    # print(frequent_words(tdf, 10))
+    # start = timer()
+    # print(stemming(tdf)["OriginalTweet"])
+    # end = timer()
+    # print(timedelta(seconds=end - start))
+    y_hat = mnb_predict(df)
+    print(mnb_accuracy(y_hat, df["Sentiment"].to_list()))

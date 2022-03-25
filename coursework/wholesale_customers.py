@@ -40,8 +40,7 @@ def standardize(df):
 # y should contain values in the set {0,1,...,k-1}.
 def kmeans(df, k):
     km = KMeans(n_clusters=k)
-    for _ in range(10):
-        km.fit(df)
+    km.fit(df)
     return pd.Series(km.predict(df))
 
 
@@ -76,21 +75,22 @@ def cluster_evaluation(df):
     for k in k_list:
         standardized = standardize(df)
 
-        k_means = kmeans(df, k)
-        k_means_stand = kmeans(standardized, k)
-        sc_standard_kmeans = clustering_score(standardized, k_means_stand)
-        sc_original_kmeans = clustering_score(df, k_means)
+        for _ in range(10):
+            k_means = kmeans(df, k)
+            k_means_stand = kmeans(standardized, k)
+            sc_standard_kmeans = clustering_score(standardized, k_means_stand)
+            sc_original_kmeans = clustering_score(df, k_means)
+            eval_df.loc[i] = ["Kmeans", "Original", k, sc_original_kmeans]
+            eval_df.loc[i+1] = ["Kmeans", "Standardized", k, sc_standard_kmeans]
+            i += 2
 
         agglo = agglomerative(df, k)
         agglo_stand = agglomerative(standardized, k)
         sc_standard_agglo = clustering_score(standardized, agglo_stand)
         sc_original_agglo = clustering_score(df, agglo)
-
-        eval_df.loc[i] = ["Kmeans", "Original", k, sc_original_kmeans]
-        eval_df.loc[i+1] = ["Kmeans", "Standardized", k, sc_standard_kmeans]
-        eval_df.loc[i+2] = ["Agglomerative", "Original", k, sc_original_agglo]
-        eval_df.loc[i+3] = ["Agglomerative", "Standardized", k, sc_standard_agglo]
-        i += 4
+        eval_df.loc[i] = ["Agglomerative", "Original", k, sc_original_agglo]
+        eval_df.loc[i+1] = ["Agglomerative", "Standardized", k, sc_standard_agglo]
+        i += 2
 
     return eval_df
 
@@ -106,10 +106,22 @@ def best_clustering_score(rdf):
 def scatter_plots(df):
     K = 3
     attribute_pairs = list(itertools.combinations(df.columns, 2))
+    standard = standardize(df)
     for pair in attribute_pairs:
         pair_to_list = list(pair)
-        y_hat = kmeans(df[pair_to_list], K)
-        plt.scatter(df[pair_to_list][pair[0]], df[pair_to_list][pair[1]], c=y_hat)
+        y_hat = agglomerative(standard[pair_to_list], K)
+        plt.scatter(standard[pair_to_list][pair[0]], standard[pair_to_list][pair[1]], c=y_hat)
         plt.xlabel(pair[0])
         plt.ylabel(pair[1])
         plt.show()
+
+
+if __name__ == "__main__":
+    df = read_csv_2('./data/wholesale_customers.csv')
+    print(df)
+    print(summary_statistics(df))
+    rdf = cluster_evaluation(df)
+    print(rdf)
+    print(kmeans(df, 3))
+    print(best_clustering_score(rdf))
+    scatter_plots(df)
