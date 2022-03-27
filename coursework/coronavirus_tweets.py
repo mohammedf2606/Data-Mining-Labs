@@ -152,3 +152,8 @@ def mnb_accuracy(y_pred, y_true):
         if y_pred[i] == y_true[i]:
             count += 1
     return round(count / len(y_true), 3)
+
+
+if __name__ == '__main__':
+    df = read_csv_3("data/coronavirus_tweets.csv")
+    print(mnb_accuracy(mnb_predict(df), df["Sentiment"]))

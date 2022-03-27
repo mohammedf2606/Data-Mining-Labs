@@ -19,8 +19,8 @@ def read_csv_2(data_file):
 # These strings index the new dataframe columns. 
 # Each row should correspond to an attribute in the original data and be indexed with the attribute name.
 def summary_statistics(df):
-    mean = round(df.mean().astype(int))
-    std = round(df.std().astype(int))
+    mean = round(df.mean()).astype(int)
+    std = round(df.std()).astype(int)
     min = df.min()
     max = df.max()
     return pd.DataFrame([mean, std, min, max]).rename(index={0: "mean", 1: "std", 2: "min", 3: "max"})
@@ -114,3 +114,8 @@ def scatter_plots(df):
         plt.xlabel(pair[0])
         plt.ylabel(pair[1])
         plt.show()
+
+
+if __name__ == '__main__':
+    df = read_csv_2("data/wholesale_customers.csv")
+    print(summary_statistics(df))
