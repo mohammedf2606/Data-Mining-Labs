@@ -115,7 +115,7 @@ def remove_stop_words(tdf):
 def stemming(tdf):
     porter = PorterStemmer()
     new_col = []
-    for idx, lst in enumerate(tdf["OriginalTweet"]):
+    for lst in tdf["OriginalTweet"]:
         stemmed = [porter.stem(x) for x in lst]
         new_col.append(stemmed)
     tdf["OriginalTweet"] = new_col
@@ -151,3 +151,12 @@ def mnb_accuracy(y_pred, y_true):
             count += 1
     return round(count / len(y_true), 3)
 
+if __name__ == '__main__':
+    df = read_csv_3("data/coronavirus_tweets.csv")
+    lower_case(df)
+    remove_non_alphabetic_chars(df)
+    remove_multiple_consecutive_whitespaces(df)
+    tokenize(df)
+    # print(count_words_without_repetitions(df))
+    # print(frequent_words(df, 10))
+    remove_stop_words(df)
