@@ -7,8 +7,6 @@ from nltk.stem import PorterStemmer
 import pandas as pd
 from collections import Counter
 import requests
-from timeit import default_timer as timer
-from datetime import timedelta
 
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.naive_bayes import MultinomialNB
@@ -153,7 +151,3 @@ def mnb_accuracy(y_pred, y_true):
             count += 1
     return round(count / len(y_true), 3)
 
-
-if __name__ == '__main__':
-    df = read_csv_3("data/coronavirus_tweets.csv")
-    print(mnb_accuracy(mnb_predict(df), df["Sentiment"]))

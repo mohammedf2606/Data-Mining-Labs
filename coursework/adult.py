@@ -1,5 +1,4 @@
 import pandas as pd
-from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import OneHotEncoder, LabelEncoder
 from sklearn.tree import DecisionTreeClassifier
 
@@ -89,11 +88,3 @@ def dt_error_rate(y_pred, y_true):
             count += 1
     return 1 - count/len(y_true)
 
-
-if __name__ == '__main__':
-    df = read_csv_1("data/adult.csv")
-    print(bachelors_masters_percentage(df))
-    X = one_hot_encoding(df)
-    y = label_encoding(df)
-    y_pred = dt_predict(X, y)
-    print(dt_error_rate(y_pred, y))

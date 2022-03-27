@@ -114,8 +114,3 @@ def scatter_plots(df):
         plt.xlabel(pair[0])
         plt.ylabel(pair[1])
         plt.show()
-
-
-if __name__ == '__main__':
-    df = read_csv_2("data/wholesale_customers.csv")
-    print(summary_statistics(df))
