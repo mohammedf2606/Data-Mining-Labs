@@ -152,30 +152,3 @@ def mnb_accuracy(y_pred, y_true):
         if y_pred[i] == y_true[i]:
             count += 1
     return round(count / len(y_true), 3)
-
-
-if __name__ == '__main__':
-    df = read_csv_3("data/coronavirus_tweets.csv")
-    # print(get_sentiments(df))
-    # print(second_most_popular_sentiment(df))
-    # print(date_most_popular_tweets(df))
-    # print(lower_case(df)["OriginalTweet"])
-    # print(remove_non_alphabetic_chars(df)["OriginalTweet"])
-    # print(remove_multiple_consecutive_whitespaces(df)["OriginalTweet"])
-    #
-    # tdf = tokenize(df)
-    # print(count_words_with_repetitions(tdf))
-    # print(count_words_without_repetitions(tdf))
-    # print(frequent_words(tdf, 10))
-    # start = timer()
-    # tdf = remove_stop_words(tdf)
-    # end = timer()
-    # print(timedelta(seconds=end - start))
-    # print(tdf["OriginalTweet"])
-    # print(frequent_words(tdf, 10))
-    # start = timer()
-    # print(stemming(tdf)["OriginalTweet"])
-    # end = timer()
-    # print(timedelta(seconds=end - start))
-    y_hat = mnb_predict(df)
-    print(mnb_accuracy(y_hat, df["Sentiment"].to_list()))

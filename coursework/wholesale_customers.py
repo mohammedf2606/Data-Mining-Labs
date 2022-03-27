@@ -114,14 +114,3 @@ def scatter_plots(df):
         plt.xlabel(pair[0])
         plt.ylabel(pair[1])
         plt.show()
-
-
-if __name__ == "__main__":
-    df = read_csv_2('./data/wholesale_customers.csv')
-    print(df)
-    print(summary_statistics(df))
-    rdf = cluster_evaluation(df)
-    print(rdf)
-    print(kmeans(df, 3))
-    print(best_clustering_score(rdf))
-    scatter_plots(df)
